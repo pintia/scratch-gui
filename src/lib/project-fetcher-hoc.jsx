@@ -1,8 +1,11 @@
 import React from 'react';
+import JSZip from 'jszip';
 import PropTypes from 'prop-types';
 import {intlShape, injectIntl} from 'react-intl';
 import bindAll from 'lodash.bindall';
 import {connect} from 'react-redux';
+import {getProblemScratchFileDownloadLink, getProblem} from '../actions';
+import config from '../config';
 
 import {setProjectUnchanged} from '../reducers/project-changed';
 import {
@@ -58,7 +61,7 @@ const ProjectFetcherHOC = function (WrappedComponent) {
                 storage.setAssetHost(this.props.assetHost);
             }
             if (this.props.isFetchingWithId && !prevProps.isFetchingWithId) {
-                this.fetchProject(this.props.reduxProjectId, this.props.loadingState);
+                this.fetchProject();
             }
             if (this.props.isShowingProject && !prevProps.isShowingProject) {
                 this.props.onProjectUnchanged();
@@ -67,22 +70,26 @@ const ProjectFetcherHOC = function (WrappedComponent) {
                 this.props.onActivateTab(BLOCKS_TAB_INDEX);
             }
         }
-        fetchProject (projectId, loadingState) {
-            return storage
-                .load(storage.AssetType.Project, projectId, storage.DataFormat.JSON)
-                .then(projectAsset => {
-                    if (projectAsset) {
-                        this.props.onFetchedProjectData(projectAsset.data, loadingState);
-                    } else {
-                        // Treat failure to load as an error
-                        // Throw to be caught by catch later on
-                        throw new Error('Could not find project');
-                    }
+        fetchProject () {
+            if ((config.mode === 'view' || config.mode === 'edit') && config.problemId) {
+                Promise.all([
+                    getProblemScratchFileDownloadLink({problemId: config.problemId})
+                        .then(({downloadLink}) => fetch(downloadLink))
+                        .then(response => response.arrayBuffer())
+                        .then(arraybuffer => JSZip.loadAsync(arraybuffer)),
+                    getProblem({problemId: config.problemId})
+                ]).then(([zip, {problem}]) => {
+                    zip.file('project.json', problem.judgeConfig.scratchJudgeConfig.answer);
+                    return zip.generateAsync({type: 'arraybuffer'});
                 })
-                .catch(err => {
-                    this.props.onError(err);
-                    log.error(err);
-                });
+                    .then(projectData => {
+                        this.props.onFetchedProjectData(projectData, this.props.loadingState);
+                    })
+                    .catch(err => {
+                        this.props.onError(err);
+                        log.error(err);
+                    });
+            }
         }
         render () {
             const {

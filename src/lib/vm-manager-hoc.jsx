@@ -5,6 +5,8 @@ import {connect} from 'react-redux';
 
 import VM from 'scratch-vm';
 import AudioEngine from 'scratch-audio';
+import {getProblemScratchFileDownloadLink} from '../actions';
+import config from '../config';
 
 import {setProjectUnchanged} from '../reducers/project-changed';
 import {
@@ -52,7 +54,16 @@ const vmManagerHOC = function (WrappedComponent) {
             }
         }
         loadProject () {
-            return this.props.vm.loadProject(this.props.projectData)
+            const projectData$ = (() => {
+                if (config.mode === 'view' && config.problemId) {
+                    return getProblemScratchFileDownloadLink({problemId: config.problemId})
+                        .then(({downloadLink}) => fetch(downloadLink))
+                        .then(response => response.arrayBuffer());
+                }
+                return Promise.resolve(this.props.projectData);
+            })();
+
+            return projectData$.then(projectData => this.props.vm.loadProject(projectData))
                 .then(() => {
                     this.props.onLoadedProject(this.props.loadingState, this.props.canSave);
                     // Wrap in a setTimeout because skin loading in

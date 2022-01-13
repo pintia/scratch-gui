@@ -6,6 +6,8 @@ module.exports = {
     },
     plugins: ['jest'],
     rules: {
-        'react/prop-types': 0
+        'react/prop-types': 0,
+        'no-warning-comments': 0,
+        'jest/no-disabled-tests': 0,
     }
 };

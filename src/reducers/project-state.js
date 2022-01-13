@@ -537,5 +537,6 @@ export {
     requestNewProject,
     requestProjectUpload,
     saveProjectAsCopy,
-    setProjectId
+    setProjectId,
+    START_MANUAL_UPDATING
 };
