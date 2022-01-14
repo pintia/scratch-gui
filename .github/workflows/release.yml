@@ -1,0 +1,46 @@
+name: Release
+
+on:
+  push:
+    types: [published]
+    branches:
+      - develop
+
+jobs:
+  test:
+    runs-on: [self-hosted, release]
+    steps:
+    - uses: actions/checkout@main
+      with:
+        ref: ${{ github.ref }}
+    - name: Use Node.js 14.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14.x
+    - name: npm install
+      run: npm install
+
+  release:
+    runs-on: [self-hosted, release]
+    steps:
+    - uses: actions/checkout@main
+      with:
+        ref: ${{ github.ref }}
+    - name: Use Node.js 14.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14.x
+    - name: npm install
+      run: npm install
+    - name: test
+      run: npm run test:lint
+    - name: build
+      run: npm build
+    - name: upload aliyun
+      uses: docker://pintia/actions-aliyun-ossutil
+      with:
+        args: cp --jobs=30 --parallel=1 -rf /github/workspace/build oss://pta-static/scratch
+      env:
+        ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY_ID }}
+        ACCESS_KEY_SECRET: ${{ secrets.ACCESS_KEY_SECRET }}
+        ENDPOINT: oss-cn-hangzhou.aliyuncs.com

@@ -1,4 +1,5 @@
 import {applyMiddleware, compose, combineReducers} from 'redux';
+import ptaReducer, {ptaInitialState} from './pta';
 import alertsReducer, {alertsInitialState} from './alerts';
 import assetDragReducer, {assetDragInitialState} from './asset-drag';
 import cardsReducer, {cardsInitialState} from './cards';
@@ -33,6 +34,7 @@ import decks from '../lib/libraries/decks/index.jsx';
 const guiMiddleware = compose(applyMiddleware(throttle(300, {leading: true, trailing: true})));
 
 const guiInitialState = {
+    pta: ptaInitialState,
     alerts: alertsInitialState,
     assetDrag: assetDragInitialState,
     blockDrag: blockDragInitialState,
@@ -132,6 +134,7 @@ const initTelemetryModal = function (currentState) {
 };
 
 const guiReducer = combineReducers({
+    pta: ptaReducer,
     alerts: alertsReducer,
     assetDrag: assetDragReducer,
     blockDrag: blockDragReducer,
