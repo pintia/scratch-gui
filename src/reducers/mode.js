@@ -26,6 +26,9 @@ const reducer = function (state, action) {
 };
 
 const setFullScreen = function (isFullScreen) {
+    if (top !== window) {
+        top.postMessage({type: SET_FULL_SCREEN, isFullScreen}, '*');
+    }
     return {
         type: SET_FULL_SCREEN,
         isFullScreen: isFullScreen

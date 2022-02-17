@@ -4,11 +4,23 @@ import {compose} from 'redux';
 
 import AppStateHOC from '../lib/app-state-hoc.jsx';
 import GUI from '../containers/gui.jsx';
+import config from '../config';
 import HashParserHOC from '../lib/hash-parser-hoc.jsx';
 import log from '../lib/log.js';
 
 const onClickLogo = () => {
-    window.location = 'https://scratch.mit.edu';
+    const {
+        PTA_URL,
+        mode,
+        problemId,
+        problemSetId,
+        problemSetProblemId
+    } = config;
+    if (mode === 'exam') {
+        window.location = `${PTA_URL}/problem-sets/${problemSetId}/problems/${problemSetProblemId}`;
+    } else {
+        window.location = `${PTA_URL}/problems/${problemId}`;
+    }
 };
 
 const handleTelemetryModalCancel = () => {
@@ -75,7 +87,7 @@ export default appTarget => {
             /> :
             <WrappedGui
                 canEditTitle
-                backpackVisible
+                backpackVisible={false}
                 showComingSoon
                 backpackHost={backpackHost}
                 canSave={false}

@@ -20,7 +20,7 @@
     touch-action: none;
 
     /* Make sure border is not included in size calculation */
-    box-sizing: content-box !important;
+    /* box-sizing: content-box !important; */
 
     /* enforce overflow + reset position of absolutely-positioned children */
     position: relative;
