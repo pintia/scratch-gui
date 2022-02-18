@@ -24,6 +24,7 @@ import TurboMode from '../../containers/turbo-mode.jsx';
 import MenuBarHOC from '../../containers/menu-bar-hoc.jsx';
 import PtaSaver from '../../containers/pta-saver.jsx';
 import PtaSubmitter from '../../containers/pta-submitter.jsx';
+import PtaResetter from '../../containers/pta-resetter.jsx';
 import config from '../../config';
 import backIcon from '../../lib/assets/icon--back.svg';
 import {openTipsLibrary} from '../../reducers/modals';
@@ -514,6 +515,7 @@ class MenuBar extends React.Component {
                 {/* show the proper UI in the account menu, given whether the user is
                 logged in, and whether a session is available to log in with */}
                 <div className={styles.accountInfoGroup}>
+                    {config.mode === 'exam' && <PtaResetter />}
                     {config.mode === 'exam' && <PtaSubmitter />}
                     {config.mode === 'edit' && <PtaSaver />}
                     <div className={styles.menuBarItem}>

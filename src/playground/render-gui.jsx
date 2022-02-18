@@ -13,11 +13,10 @@ const onClickLogo = () => {
         PTA_URL,
         mode,
         problemId,
-        problemSetId,
-        problemSetProblemId
+        problemSetId
     } = config;
     if (mode === 'exam') {
-        window.location = `${PTA_URL}/problem-sets/${problemSetId}/problems/${problemSetProblemId}`;
+        window.location = `${PTA_URL}/problem-sets/${problemSetId}/problems/type/13`;
     } else {
         window.location = `${PTA_URL}/problems/${problemId}`;
     }

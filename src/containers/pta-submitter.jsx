@@ -36,6 +36,7 @@ const PtaSubmitter = ({
             .then(() => {
                 setSaving(false);
                 setProjectUnchanged();
+                window.location = `${config.PTA_URL}/problem-sets/${config.problemSetId}/problems/type/13`;
             })
             .catch(e => {
                 setSaving(false);
@@ -48,8 +49,13 @@ const PtaSubmitter = ({
             <div>{'提交中...'}</div>
         ) : (
             projectChanged ? (
-                // eslint-disable-next-line react/jsx-no-bind
-                <Button onClick={submitProblem}>{'提交'}</Button>
+                <Button
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onClick={submitProblem}
+                    style={{border: '1px solid white', padding: '8px 12px'}}
+                >
+                    {'提交'}
+                </Button>
             ) : null
         )
     );

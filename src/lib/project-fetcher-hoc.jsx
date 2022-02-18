@@ -86,7 +86,7 @@ const ProjectFetcherHOC = function (WrappedComponent) {
                         downloadScratchFile({
                             problemSetId: config.problemSetId,
                             problemSetProblemId: config.problemSetProblemId
-                        }).then(({downloadLink}) => fetch(downloadLink))
+                        }).then(({downloadLink}) => fetch(downloadLink.replace(/^http:/, 'https:')))
                             .then(response => response.arrayBuffer())
                             .then(arraybuffer => JSZip.loadAsync(arraybuffer)),
                         (config.examId === '0' ? getLastPreviewSubmissionForProblem({
