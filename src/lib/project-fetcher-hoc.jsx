@@ -5,11 +5,11 @@ import {intlShape, injectIntl} from 'react-intl';
 import bindAll from 'lodash.bindall';
 import {connect} from 'react-redux';
 import {
-    getProblemScratchFileDownloadLink,
     getProblem,
     downloadScratchFile,
     getLastPreviewSubmissionForProblem,
-    getLastSubmissionForProblem
+    getLastSubmissionForProblem,
+    getProblemScratchFileDownloadLink
 } from '../actions';
 import config from '../config';
 
@@ -101,18 +101,24 @@ const ProjectFetcherHOC = function (WrappedComponent) {
                             zip.file('project.json', answer);
                         }
                         return zip.generateAsync({type: 'arraybuffer'});
-                    }) :
-                    Promise.all([
-                        getProblemScratchFileDownloadLink({problemId: config.problemId})
-                            .then(({downloadLink}) => fetch(downloadLink))
-                            .then(response => response.arrayBuffer())
-                            .then(arraybuffer => JSZip.loadAsync(arraybuffer)),
-                        getProblem({problemId: config.problemId})
-                            .then(({problem}) => problem.judgeConfig.scratchJudgeConfig.answer)
-                    ]).then(([zip, answer]) => {
-                        zip.file('project.json', answer);
-                        return zip.generateAsync({type: 'arraybuffer'});
-                    })
+                    }) : getProblem({problemId: config.problemId})
+                        .then(({problem}) => {
+                            const {answer} = problem.judgeConfig.scratchJudgeConfig;
+
+                            return (problem.problemConfig.scratchProblemConfig.projectFile === 'default' ?
+                                fetch(config.DEFAULT_PROJECT_URL) :
+                                getProblemScratchFileDownloadLink({problemId: config.problemId})
+                                    .then(({downloadLink}) => fetch(downloadLink))
+                            )
+                                .then(response => response.arrayBuffer())
+                                .then(arraybuffer => JSZip.loadAsync(arraybuffer))
+                                .then(zip => {
+                                    if (answer) {
+                                        zip.file('project.json', answer);
+                                    }
+                                    return zip.generateAsync({type: 'arraybuffer'});
+                                });
+                        })
                 ).then(projectData => {
                     this.props.onFetchedProjectData(projectData, this.props.loadingState);
                 }).catch(err => {

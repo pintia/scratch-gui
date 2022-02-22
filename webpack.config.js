@@ -137,15 +137,15 @@ module.exports = [
             }),
             new HtmlWebpackPlugin({
                 chunks: ['lib.min', 'gui'],
-                template: 'src/playground/dev.ejs',
-                filename: 'dev.html',
-                title: 'Pintia Scratch 3.0 GUI',
+                template: 'src/playground/index.ejs',
+                title: 'PTA Scratch 3.0 GUI',
                 sentryConfig: process.env.SENTRY_CONFIG ? '"' + process.env.SENTRY_CONFIG + '"' : null
             }),
             new HtmlWebpackPlugin({
                 chunks: ['lib.min', 'gui'],
-                template: 'src/playground/index.ejs',
-                title: 'Pintia Scratch 3.0 GUI',
+                template: 'src/playground/index-dev.ejs',
+                filename: 'dev.html',
+                title: 'PTA Scratch 3.0 GUI',
                 sentryConfig: process.env.SENTRY_CONFIG ? '"' + process.env.SENTRY_CONFIG + '"' : null
             }),
             new HtmlWebpackPlugin({
@@ -164,7 +164,13 @@ module.exports = [
                 chunks: ['lib.min', 'player'],
                 template: 'src/playground/index.ejs',
                 filename: 'player.html',
-                title: 'Scratch 3.0 GUI: Player Example'
+                title: 'PTA Scratch 3.0 GUI: Player'
+            }),
+            new HtmlWebpackPlugin({
+                chunks: ['lib.min', 'player'],
+                template: 'src/playground/index-dev.ejs',
+                filename: 'player-dev.html',
+                title: 'PTA Scratch 3.0 GUI: Player'
             }),
             new CopyWebpackPlugin([{
                 from: 'static',
