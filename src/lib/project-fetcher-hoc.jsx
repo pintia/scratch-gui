@@ -93,7 +93,7 @@ const ProjectFetcherHOC = function (WrappedComponent) {
                             problemSetId: config.problemSetId,
                             problemSetProblemId: config.problemSetProblemId
                         }) : getLastSubmissionForProblem({
-                            problemSetId: config.problemId,
+                            problemSetId: config.problemSetId,
                             problemSetProblemId: config.problemSetProblemId
                         })).then(({submission}) => submission?.submissionDetails?.[0]?.scratchSubmissionDetail?.answer)
                     ]).then(([zip, answer]) => {
